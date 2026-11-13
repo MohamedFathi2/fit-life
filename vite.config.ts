@@ -7,6 +7,8 @@ import pkg from './package.json' with { type: 'json' };
 export default defineConfig({
   base: './',
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
+  // supabase-js is most of the bundle (~180 kB gzipped total); fine for an installed PWA that caches it once
+  build: { chunkSizeWarningLimit: 700 },
   plugins: [
     react(),
     VitePWA({

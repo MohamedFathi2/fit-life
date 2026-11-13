@@ -7,6 +7,7 @@ import { t } from '../lib/i18n';
 import { addDays, diffDays, numOrNull, r1, uid } from '../lib/util';
 import { fmtD, signed } from '../lib/format';
 import { Chart, Icon, NumField, Seg, confirmAsk, toast } from '../components/ui';
+import { Info } from '../components/Glossary';
 import type { BodyEntry } from '../types';
 
 function upsert(date: string, patch: Partial<BodyEntry>) {
@@ -17,12 +18,12 @@ function upsert(date: string, patch: Partial<BodyEntry>) {
 }
 
 /** Small "log today's weight" control used on Home and Progress. */
-export function BodyQuick() {
+export function BodyQuick({ compact }: { compact?: boolean } = {}) {
   const { date } = useUi();
   const cur = get('body', date);
   return (
-    <div className="row">
-      <NumField value={cur?.weight ?? null} placeholder={t('weightKg')} step="0.1" onCommit={v => { const n = numOrNull(v); if (n !== (cur?.weight ?? null)) { upsert(date, { weight: n }); if (n != null) toast(t('saved')); } }} />
+    <div className="row" style={compact ? { gap: 6 } : undefined}>
+      <NumField className={compact ? 'sm' : undefined} value={cur?.weight ?? null} placeholder={compact ? t('logWeight') : t('weightKg')} step="0.1" onCommit={v => { const n = numOrNull(v); if (n !== (cur?.weight ?? null)) { upsert(date, { weight: n }); if (n != null) toast(t('saved')); } }} />
       <span className="muted small">kg</span>
     </div>
   );
@@ -97,10 +98,10 @@ export function Progress() {
         <div className="grid3" style={{ marginBottom: 10 }}>
           <div className="stat"><small>{t('current')}</small><b>{last ? r1(last.weight) : t('noData')}</b></div>
           <div className="stat"><small>{t('change')}</small><b style={{ color: ch == null ? undefined : ch <= 0 ? 'var(--good)' : 'var(--warn)' }}>{ch != null ? signed(ch) : t('noData')}</b></div>
-          <div className="stat"><small>{t('perWeek')}</small><b>{wk != null ? signed(wk, 2) : t('noData')}</b></div>
+          <div className="stat"><small>{t('perWeek')} <Info id="rate" s={12} /></small><b>{wk != null ? signed(wk, 2) : t('noData')}</b></div>
         </div>
         <Chart series={[{ pts: inR.map(e => ({ x: e.date, y: e.weight })), color: 'var(--muted)', dots: 3, line: false, faint: true }, { pts: ma, color: 'var(--accent)' }]} />
-        <div className="legend"><span><i style={{ background: 'var(--muted)' }} />{t('weight')}</span><span><i style={{ background: 'var(--accent)' }} />{t('avg7')}</span></div>
+        <div className="legend"><span><i style={{ background: 'var(--muted)' }} />{t('weight')}</span><span><i style={{ background: 'var(--accent)' }} />{t('avg7')}<Info id="trend" s={12} /></span></div>
         {waist.length > 1 && <><hr /><h2>{t('waist')} (cm)</h2><Chart h={140} series={[{ pts: waist.map(e => ({ x: e.date, y: e.waist! })), color: 'var(--p)', dots: 3 }]} /></>}
       </div>
 

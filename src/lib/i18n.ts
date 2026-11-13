@@ -50,6 +50,8 @@ const EN = {
   syncOk: 'Synced', syncing: 'Syncing…', syncOffline: 'Offline — will sync later', syncError: 'Sync problem', syncNow: 'Sync now', lastSync: 'Last sync {0}',
   authTitle: 'Your fitness, everywhere', authSub: 'Sign in to sync your logs between phone and computer.', checkEmail: 'Check your email to confirm your account, then sign in.',
   install: 'Install app', noData: '—',
+  glossary: 'Glossary', glossarySub: 'The ideas behind your plan, in plain language, with your own numbers.', seeAlso: 'See also', learnMore: 'What is this?', notMedical: 'General education, not medical advice. Follow your coach and doctor for your situation.', learnToday: 'Learn something', readMore: 'Read more',
+  goodMorning: 'Good morning', goodAfternoon: 'Good afternoon', goodEvening: 'Good evening', upNext: 'Up next', ateIt: 'Ate it', allMealsDone: 'All meals done today. Nice work.', setsProgress: '{0}/{1} sets', exDone: 'Done', show: 'Show', kcalLeft: '{0} kcal left', viewDay: 'View day',
 };
 type Key = keyof typeof EN;
 
@@ -103,6 +105,8 @@ const AR: Record<Key, string> = {
   syncOk: 'تمت المزامنة', syncing: 'جارٍ المزامنة…', syncOffline: 'غير متصل — ستتم المزامنة لاحقًا', syncError: 'مشكلة في المزامنة', syncNow: 'زامن الآن', lastSync: 'آخر مزامنة {0}',
   authTitle: 'لياقتك في كل مكان', authSub: 'سجّل الدخول لمزامنة سجلاتك بين الهاتف والكمبيوتر.', checkEmail: 'افحص بريدك لتأكيد الحساب ثم سجّل الدخول.',
   install: 'تثبيت التطبيق', noData: '—',
+  glossary: 'المصطلحات', glossarySub: 'الأفكار اللي وراء خطتك بلغة بسيطة، مع أرقامك أنت.', seeAlso: 'شوف كمان', learnMore: 'إيه ده؟', notMedical: 'معلومات عامة وليست نصيحة طبية. اتبع مدربك وطبيبك في حالتك.', learnToday: 'معلومة اليوم', readMore: 'اقرأ أكتر',
+  goodMorning: 'صباح الخير', goodAfternoon: 'مساء الخير', goodEvening: 'مساء الخير', upNext: 'التالي', ateIt: 'أكلتها', allMealsDone: 'خلصت كل وجبات النهارده. عاش.', setsProgress: '{0}/{1} مجموعات', exDone: 'تم', show: 'عرض', kcalLeft: 'متبقي {0} سعرة', viewDay: 'عرض اليوم',
 };
 
 let lang: Lang = 'en';

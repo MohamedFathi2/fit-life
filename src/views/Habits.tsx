@@ -8,6 +8,7 @@ import { fmtN, locale, t } from '../lib/i18n';
 import { addDays, numOrNull, parseISO, r1, uid } from '../lib/util';
 import { fmtD } from '../lib/format';
 import { Icon, NoteField, NumField, Sheet, Track, confirmAsk, toast } from '../components/ui';
+import { Info } from '../components/Glossary';
 import type { Checkin } from '../types';
 
 function streak(test: (d: string) => boolean, from: string) {
@@ -43,7 +44,7 @@ export function Habits() {
   return (
     <>
       <div className={`card ${dueIn === 0 ? 'accent' : ''}`}>
-        <h2><Icon n="flag" s={18} />{t('checkin')}</h2>
+        <h2><Icon n="flag" s={18} />{t('checkin')}<Info id="checkin" s={14} /></h2>
         <div className="row"><span className="sp">{dueIn === 0 ? t('checkinDue') : <span className="muted">{t('checkinIn', dueIn)}</span>}</span><button className={`btn ${dueIn === 0 ? 'primary' : 'sm'}`} onClick={() => setCk(true)}>{t('startCheckin')}</button></div>
       </div>
 
@@ -60,12 +61,12 @@ export function Habits() {
 
       <div className="grid2" style={{ marginBottom: 12 }}>
         <div className="card" style={{ margin: 0 }}>
-          <h2>{t('steps')}</h2>
+          <h2>{t('steps')}<Info id="steps" s={14} /></h2>
           <NumField value={rec?.steps ?? null} placeholder={fmtN(s.steps)} step="1" onCommit={v => setDay(date, d => { d.steps = numOrNull(v); })} />
           <div style={{ marginTop: 10 }}><Track pct={((rec?.steps ?? 0) / s.steps) * 100} color="var(--good)" /></div>
         </div>
         <div className="card" style={{ margin: 0 }}>
-          <h2>{t('sleep')} ({t('hoursShort')})</h2>
+          <h2>{t('sleep')} ({t('hoursShort')})<Info id="sleep" s={14} /></h2>
           <NumField value={rec?.sleep ?? null} placeholder={String(s.sleep)} step="0.25" onCommit={v => setDay(date, d => { d.sleep = numOrNull(v); })} />
           <div style={{ marginTop: 10 }}><Track pct={((rec?.sleep ?? 0) / s.sleep) * 100} color="var(--accent)" /></div>
         </div>

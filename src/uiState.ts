@@ -22,3 +22,8 @@ export function beep() {
   } catch { /* audio unavailable */ }
   try { navigator.vibrate?.([200, 100, 200]); } catch { /* no vibration */ }
 }
+
+/** Glossary term shown in the info sheet (null = closed). */
+export const termState = { id: null as string | null };
+export const openTerm = (id: string) => { termState.id = id; v++; ls.forEach(l => l()); };
+export const closeTerm = () => { termState.id = null; v++; ls.forEach(l => l()); };

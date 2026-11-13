@@ -9,6 +9,7 @@ import { addDays, mmss, num, r1, uid } from '../lib/util';
 import { fmtD } from '../lib/format';
 import { Chart, Icon, NoteField, Sheet, confirmAsk, toast } from '../components/ui';
 import { VideoSheet } from '../components/VideoSheet';
+import { Info } from '../components/Glossary';
 import type { LoggedSet, PlanExercise, Workout } from '../types';
 
 export function startWorkout(dayIdx: number) {
@@ -43,7 +44,7 @@ function PlanView({ date, onVideo }: { date: string; onVideo: (id: string) => vo
   return (
     <>
       <div className="row" style={{ marginBottom: 10 }}>
-        <div className="sp"><div className="muted small">{t('program')}</div><b>{p.training.name}</b></div>
+        <div className="sp"><div className="muted small">{t('program')} <Info id="split" s={13} /></div><b>{p.training.name}</b></div>
         <button className={`btn sm ${edit ? 'primary' : ''}`} onClick={() => setEdit(!edit)}><Icon n="edit" s={14} />{edit ? t('doneEditing') : t('editPlan')}</button>
       </div>
       <div className="days">
@@ -80,7 +81,7 @@ function PlanView({ date, onVideo }: { date: string; onVideo: (id: string) => vo
               </div>
               {pe.note && <div className="exsub"><Icon n="bulb" s={13} className="" /> {L(pe.note)}</div>}
               {last && <div className="hint hold">{t('lastTime')}: {last.map(s => isCardio(pe.exId) ? `${s.r} ${t('minCol')}` : `${s.w || 0}×${s.r || 0}`).join(', ')}</div>}
-              {sug && <div className={`hint ${sug.kind}`}><Icon n="trend" s={13} />{t(sug.kind === 'up' ? 'suggestUp' : sug.kind === 'hold' ? 'suggestHold' : 'suggestDown', r1(sug.weight))}</div>}
+              {sug && <div className={`hint ${sug.kind}`}><Icon n="trend" s={13} />{t(sug.kind === 'up' ? 'suggestUp' : sug.kind === 'hold' ? 'suggestHold' : 'suggestDown', r1(sug.weight))}<Info id="double" s={12} /></div>}
               {(notesOpen === pe.uid) ? <div style={{ marginTop: 6 }}><NoteField value={my} onSave={v => setNote('ex:' + pe.exId, v)} /></div>
                 : my ? <div className="exsub" style={{ color: 'var(--text)', whiteSpace: 'pre-wrap' }}>📝 {my}</div> : null}
             </div>
@@ -134,6 +135,9 @@ function ExerciseEditSheet({ di, ei, onClose }: { di: number; ei: number | null;
 function Active({ w, onVideo }: { w: Workout; onVideo: (id: string) => void }) {
   const [swapFor, setSwapFor] = useState<number | null>(null);
   const [adding, setAdding] = useState(false);
+  const [openDone, setOpenDone] = useState<Set<string>>(new Set());
+  const total = w.exercises.reduce((a, e) => a + e.sets.length, 0), doneN = setsDone(w);
+  const nextEx = w.exercises.findIndex(e => e.sets.some(s => !s.done));
   const mut = (fn: (d: Workout) => void) => update('active', 'main', () => w, fn);
   const setField = (ei: number, si: number, k: keyof LoggedSet, v: string) => mut(d => { (d.exercises[ei].sets[si] as unknown as Record<string, unknown>)[k] = v; });
   const finish = () => {
@@ -146,7 +150,8 @@ function Active({ w, onVideo }: { w: Workout; onVideo: (id: string) => void }) {
     <>
       <div className="livebar">
         <Icon n="timer" s={20} />
-        <div className="sp"><b>{L(w.name)}</b><div className="small" data-elapsed={w.start}>{mmss((Date.now() - w.start) / 1000)}</div></div>
+        <div className="sp"><b>{L(w.name)}</b><div className="small"><span data-elapsed={w.start}>{mmss((Date.now() - w.start) / 1000)}</span> · {t('setsProgress', doneN, total)}</div>
+          <div className="liveprog"><i style={{ width: `${total ? (doneN / total) * 100 : 0}%` }} /></div></div>
         <button className="btn sm" onClick={() => { if (confirmAsk(t('confirmDiscard'))) { del('active', 'main'); setUi({ restEnd: 0 }); } }}>{t('discard')}</button>
         <button className="btn sm fin" onClick={finish}><Icon n="check" s={14} />{t('finish')}</button>
       </div>
@@ -155,8 +160,17 @@ function Active({ w, onVideo }: { w: Workout; onVideo: (id: string) => void }) {
         const planEx = plan().training.days.find(d => d.uid === w.dayUid)?.exercises.find(x => x.exId === e.exId);
         const sug = !cardio && planEx ? suggestion(planEx.sets, lastSets(e.exId, w.id)) : null;
         const my = note('ex:' + e.exId);
+        const allDone = e.sets.length > 0 && e.sets.every(s => s.done);
+        if (allDone && !openDone.has(e.uid)) return (
+          <button className="card meal-done" key={e.uid} onClick={() => setOpenDone(s => new Set(s).add(e.uid))}>
+            <span className="chk on"><Icon n="check" s={16} /></span>
+            <b className="sp">{L(ex.name)}</b>
+            <span className="muted small">{cardio ? `${e.sets[0]?.r} ${t('minCol')}` : e.sets.map(s => `${s.w || 0}×${s.r || 0}`).join(', ')}</span>
+          </button>
+        );
+        const firstOpen = e.sets.findIndex(s => !s.done);
         return (
-          <div className="card" key={e.uid}>
+          <div className={`card ${ei === nextEx ? 'current' : ''}`} key={e.uid} id={'ex-' + e.uid}>
             <div className="exh">
               <b className="sp">{L(ex.name)}</b>
               {ex.video && <button className="ib" onClick={() => onVideo(ex.id)} title={t('video')}><Icon n="video" s={18} /></button>}
@@ -171,12 +185,12 @@ function Active({ w, onVideo }: { w: Workout; onVideo: (id: string) => void }) {
               <div style={{ marginTop: 6 }}><NoteField value={my} onSave={v => setNote('ex:' + e.exId, v)} /></div>
             </details>
             <table className="sets">
-              <thead><tr><th>{t('set')}</th><th>{t('prev')}</th>{cardio ? <th>{t('minCol')}</th> : <><th>{t('kgCol')}</th><th>{t('repsCol')}</th><th>{t('rirCol')}</th></>}<th /></tr></thead>
+              <thead><tr><th>{t('set')}</th><th>{t('prev')}</th>{cardio ? <th>{t('minCol')}</th> : <><th>{t('kgCol')}</th><th>{t('repsCol')}</th><th><span className="row" style={{ gap: 2, justifyContent: 'center' }}>{t('rirCol')}<Info id="rir" s={12} /></span></th></>}<th /></tr></thead>
               <tbody>
                 {e.sets.map((s, si) => {
                   const p = prev[si] ?? prev[prev.length - 1];
                   return (
-                    <tr key={si} className={s.done ? 'done' : ''}>
+                    <tr key={si} className={s.done ? 'done' : ei === nextEx && si === firstOpen ? 'next' : ''}>
                       <td className="n">{si + 1}</td>
                       <td className="prev">{p ? (cardio ? p.r : `${p.w || 0}×${p.r || 0}`) : '—'}</td>
                       {cardio
@@ -198,6 +212,10 @@ function Active({ w, onVideo }: { w: Workout; onVideo: (id: string) => void }) {
                             }
                           });
                           if (nowDone && !cardio) startRest(s.rest || 120);
+                          if (nowDone && e.sets.every((x, i) => i === si || x.done)) {
+                            const nx = w.exercises.slice(ei + 1).find(x => x.sets.some(y => !y.done));
+                            if (nx) setTimeout(() => document.getElementById('ex-' + nx.uid)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 250);
+                          }
                         }}>{s.done && <Icon n="check" s={16} />}</button>
                       </td>
                     </tr>
@@ -258,7 +276,7 @@ function Strength() {
       <h2><Icon n="trend" s={18} />{t('strength')}</h2>
       <select value={cur} onChange={e => setPick(e.target.value)} style={{ marginBottom: 10 }}>{ids.map(id => <option key={id} value={id}>{L(exById(id).name)}</option>)}</select>
       <Chart series={[{ pts: best, color: 'var(--accent)', dots: 3.5 }, { pts: top, color: 'var(--p)', dots: 3, dash: true, width: 2 }]} />
-      <div className="legend"><span><i style={{ background: 'var(--accent)' }} />{t('e1rm')}</span><span><i style={{ background: 'var(--p)' }} />{t('topSet')}</span></div>
+      <div className="legend"><span><i style={{ background: 'var(--accent)' }} />{t('e1rm')}<Info id="e1rm" s={12} /></span><span><i style={{ background: 'var(--p)' }} />{t('topSet')}</span></div>
     </div>
   );
 }

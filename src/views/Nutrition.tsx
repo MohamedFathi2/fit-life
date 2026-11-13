@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { day, note, plan, put, setDay, setNote, setPlan, settings, setSettings } from '../store/store';
 import { useUi } from '../uiState';
 import { isRest, planDayFor } from '../domain/cycle';
@@ -7,6 +7,7 @@ import { FOOD_CATS } from '../data/foods';
 import { fmtN, L, t } from '../lib/i18n';
 import { num, r1, uid } from '../lib/util';
 import { Bar, Icon, NoteField, Ring, Seg, Sheet, confirmAsk, toast } from '../components/ui';
+import { Info } from '../components/Glossary';
 import type { Food, Macros } from '../types';
 
 const fmtAmt = (a: number, unit: string) => `${r1(a)}${unit === 'g' || unit === 'ml' ? ' ' : ' × '}${unit === 'g' ? 'g' : unit}`;
@@ -20,6 +21,14 @@ export function Nutrition() {
   const [itemEdit, setItemEdit] = useState<{ mealUid: string; itemUid: string } | null>(null);
   const [mealEdit, setMealEdit] = useState<string | null>(null);
   const [noteOpen, setNoteOpen] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const topRef = useRef<HTMLDivElement>(null);
+  const [showSticky, setShowSticky] = useState(false);
+  useEffect(() => {
+    const el = topRef.current; if (!el) return;
+    const io = new IntersectionObserver(([e]) => setShowSticky(!e.isIntersecting), { rootMargin: '-60px 0px 0px 0px' });
+    io.observe(el); return () => io.disconnect();
+  }, []);
   const rest = isRest(date), rec = day(date);
   const { target, eaten } = totals(date);
   const meals = resolveDay(date);
@@ -32,9 +41,17 @@ export function Nutrition() {
 
   return (
     <>
-      <div className="card">
+      {showSticky && (
+        <div className="stickysum">
+          <b>{left >= 0 ? t('kcalLeft', fmtN(left)) : t('over', fmtN(-left))}</b>
+          <span><i style={{ background: 'var(--p)' }} />{Math.round(eaten.p)}/{Math.round(target.p)}</span>
+          <span><i style={{ background: 'var(--c)' }} />{Math.round(eaten.c)}/{Math.round(target.c)}</span>
+          <span><i style={{ background: 'var(--f)' }} />{Math.round(eaten.f)}/{Math.round(target.f)}</span>
+        </div>
+      )}
+      <div className="card" ref={topRef}>
         <div className="row wrap" style={{ marginBottom: 12 }}>
-          <span className="chip accent">{t('phase')}: {L(plan().nutrition.phase)}</span><span className="sp" />
+          <span className="chip accent">{t('phase')}: {L(plan().nutrition.phase)}<Info id="deficit" s={13} /></span><span className="sp" />
           <Seg value={rest ? 'rest' : 'train'} options={[['train', t('trainingDay')], ['rest', t('restDay')]]} onChange={setType} />
         </div>
         <div className="row" style={{ gap: 16 }}>
@@ -46,7 +63,7 @@ export function Nutrition() {
           </div>
         </div>
         <div className="row" style={{ marginTop: 8 }}>
-          <span className="muted tiny sp">{t('macrosFromPlan')}</span>
+          <span className="muted tiny sp">{t('macrosFromPlan')} <Info id="macros" s={13} /></span>
           <button className={`btn sm ${edit ? 'primary' : ''}`} onClick={() => setEdit(!edit)}><Icon n="edit" s={14} />{edit ? t('doneEditing') : t('editPlan')}</button>
         </div>
       </div>
@@ -55,11 +72,21 @@ export function Nutrition() {
         const eatenM = m.items.filter(i => rec?.eaten?.[i.item.uid]).reduce((a, i) => a + i.macros.kcal, 0);
         const allOn = m.items.length > 0 && m.items.every(i => rec?.eaten?.[i.item.uid]);
         const myNote = note('meal:' + m.meal.uid);
+        const collapsed = allOn && !edit && !expanded.has(m.meal.uid);
+        const toggleOpen = () => setExpanded(s => { const n = new Set(s); if (n.has(m.meal.uid)) n.delete(m.meal.uid); else n.add(m.meal.uid); return n; });
+        if (collapsed) return (
+          <button key={m.meal.uid} className="card meal-done" onClick={toggleOpen}>
+            <span className="chk on"><Icon n="check" s={16} /></span>
+            <b className="sp">{L(m.meal.name)}</b>
+            <span className="muted small">{fmtN(m.total.kcal)} {t('kcal')} · P {Math.round(m.total.p)}</span>
+            <Icon n="down" s={16} className="muted" />
+          </button>
+        );
         return (
           <div key={m.meal.uid} className={`card flush ${m.skipped ? 'skip' : ''}`}>
             <div className="mealh">
-              <div className="sp"><h3>{L(m.meal.name)}</h3><div className="muted tiny">{fmtN(eatenM)} / {fmtN(m.total.kcal)} {t('kcal')} · {macroLine(m.total)}</div></div>
-              {m.skipped ? <span className="chip">{t('skippedRest')}</span> : m.meal.trainingOnly ? <span className="chip">{t('trainingOnly')}</span> : null}
+              <div className="sp" onClick={allOn ? toggleOpen : undefined} style={allOn ? { cursor: 'pointer' } : undefined}><h3>{L(m.meal.name)}</h3><div className="muted tiny">{fmtN(eatenM)} / {fmtN(m.total.kcal)} {t('kcal')} · {macroLine(m.total)}</div></div>
+              {m.skipped ? <span className="chip">{t('skippedRest')}<Info id="preworkout" s={13} /></span> : m.meal.trainingOnly ? <span className="chip">{t('trainingOnly')}<Info id="preworkout" s={13} /></span> : null}
               <button className={`ib ${myNote ? 'on' : ''}`} title={t('myNote')} onClick={() => setNoteOpen(noteOpen === m.meal.uid ? null : m.meal.uid)}><Icon n="note" s={18} /></button>
               {edit
                 ? <button className="ib" onClick={() => setMealEdit(m.meal.uid)}><Icon n="edit" s={18} /></button>
@@ -189,7 +216,7 @@ function SwapSheet({ date, mealUid, itemUid, onClose }: { date: string; mealUid:
       ) : undefined}>
       <div className="stat" style={{ marginBottom: 12 }}><small>{fmtAmt(item.amount, from.unit)}</small><b>{fmtN(orig.kcal)} {t('kcal')}</b> <span className="small muted">{macroLine(orig)}</span></div>
       <div className="row wrap" style={{ marginBottom: 8 }}>
-        <span className="small muted">{t('matchBy')}</span>
+        <span className="small muted">{t('matchBy')} <Info id="swaps" s={13} /></span>
         <Seg value={mode} onChange={v => { setMode(v); setSel(null); setAmount(''); }} options={[['auto', `${t('matchAuto')} (${metricLabel[autoM]})`], ['kcal', t('calories')], ['p', t('protein')], ['c', t('carbs')], ['f', t('fat')]]} />
       </div>
       <input type="search" placeholder={t('search')} value={q} onChange={e => setQ(e.target.value)} style={{ marginBottom: 8 }} />
