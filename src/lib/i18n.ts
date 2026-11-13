@@ -1,0 +1,121 @@
+import type { L10n, Lang } from '../types';
+
+const EN = {
+  home: 'Home', nutrition: 'Nutrition', training: 'Training', progress: 'Progress', habits: 'Habits', settings: 'Settings',
+  today: 'Today', yesterday: 'Yesterday', cancel: 'Cancel', save: 'Save', add: 'Add', edit: 'Edit', del: 'Delete', close: 'Close', back: 'Back', done: 'Done', search: 'Search…', confirm: 'Confirm',
+  kcal: 'kcal', protein: 'Protein', carbs: 'Carbs', fat: 'Fat', calories: 'Calories',
+  trainingDay: 'Training day', restDay: 'Rest day', left: '{0} left', over: '{0} over', ofTarget: 'of {0}',
+  eatAll: 'Ate it all', skippedRest: 'Skipped on rest days', trainingOnly: 'Training days only',
+  swap: 'Swap', swapTitle: 'Swap {0}', swapToday: 'Today only', swapAlways: 'Always', swapped: 'swapped',
+  swappedFrom: 'Swapped from {0}', revertCoach: "Back to coach's plan", revertToday: 'Undo today’s swap',
+  matchBy: 'Match by', matchAuto: 'Auto', sameGroup: 'Same group', allFoods: 'All foods', noMatches: 'No foods found.',
+  amount: 'Amount', vsOriginal: 'vs. original', cooked: '≈ {0} g cooked', newFood: 'New food', myFoods: 'My foods',
+  foodName: 'Food name', unit: 'Unit', per: 'Values per', group: 'Group',
+  extras: 'Extra food', extrasEmpty: 'Nothing extra today.', addExtra: 'Log extra food', quick: 'Quick entry (just macros)',
+  coachNote: "Coach's note", myNote: 'My note', addNote: 'Add a note…', notes: 'Notes',
+  shopping: 'Shopping list', shopDays: 'Days', shopHint: 'From your current plan. Pre-workout food is counted for training days only.',
+  confirmDelete: 'Delete this?', phase: 'Phase',
+  program: 'Program', startWorkout: 'Start workout', continueWorkout: 'Continue', inProgress: 'Workout in progress',
+  restDayMsg: 'Rest day. Recover, walk, and hit your food.', trainAnyway: 'Train anyway',
+  nSets: '{0} sets', oneSet: '1 set', setsWord: 'Sets', set: 'Set', prev: 'Last', kgCol: 'kg', repsCol: 'Reps', rirCol: 'RIR', minCol: 'min',
+  lastTime: 'Last time', finish: 'Finish', discard: 'Discard', addSet: 'Add set', removeSet: 'Remove set', addExercise: 'Add exercise',
+  swapExercise: 'Swap exercise', swapExHint: 'Same muscle group from your coach’s library', video: 'Video', noVideo: 'No video for this exercise.', openOriginal: 'Open original',
+  confirmDiscard: 'Discard this workout? Logged sets will be lost.', noSetsDone: 'No sets ticked yet. Discard the workout?',
+  workoutSaved: 'Workout saved 💪', history: 'History', noHistory: 'No workouts logged yet.',
+  duration: 'Duration', volume: 'Volume', strength: 'Strength progress', needMoreData: 'Log at least 2 sessions to see a chart.',
+  e1rm: 'Est. 1RM', topSet: 'Top weight', makeToday: 'Set as today', dayN: 'Day {0}', exercisesN: '{0} exercises',
+  suggestUp: 'Hit the top of the range → try {0} kg', suggestHold: 'Stay at {0} kg and add reps', suggestDown: 'Missed the range → stay at or below {0} kg',
+  restTimer: 'Rest', skip: 'Skip', sessionNote: 'Session note',
+  editPlan: 'Edit plan', doneEditing: 'Done', editDay: 'Edit day', dayName: 'Day name', exercise: 'Exercise', reps: 'Reps', restSec: 'Rest (s)', rirTarget: 'RIR',
+  weight: 'Weight', weightKg: 'Weight (kg)', logWeight: 'Log today', measurements: 'Measurements (cm)', waist: 'Waist', chest: 'Chest', arm: 'Arm', thigh: 'Thigh', hips: 'Hips', neck: 'Neck', bodyFat: 'Body fat %', photo: 'Photo', addPhoto: 'Add photo',
+  current: 'Current', change: 'Change', perWeek: 'Per week', entries: 'Entries', photos: 'Photos', noPhotos: 'No photos yet.', compareHint: 'Tap two photos to compare.',
+  avg7: '7-day average', saved: 'Saved', all: 'All', d30: '30d', d90: '90d', d180: '6m',
+  water: 'Water', steps: 'Steps', sleep: 'Sleep', hoursShort: 'h', dailyHabits: 'Daily habits', streak: '{0}-day streak', noHabits: 'No habits yet. Add some in Settings.',
+  last7: 'Last 7 days', workout: 'Workout', followedPlan: 'Meal plan',
+  journal: 'Journal', journalHint: 'How did today go? Energy, mood, anything worth remembering…',
+  checkin: 'Weekly check-in', checkinDue: 'Your weekly check-in is due.', checkinIn: 'Next check-in in {0} days.', startCheckin: 'Start check-in', checkinBanner: 'Weekly check-in ready',
+  energy: 'Energy', hunger: 'Hunger', sleepQ: 'Sleep quality', stress: 'Stress', digestion: 'Digestion', dietAdh: 'Diet adherence %',
+  wins: 'Wins this week', struggles: 'Struggles', questions: 'Questions for coach', weekSummary: 'This week (auto)',
+  avgWeight: 'Avg weight', workouts: 'Workouts', avgKcal: 'Avg kcal', planFollowed: 'Plan followed', avgWater: 'Avg water', avgSleep: 'Avg sleep', avgSteps: 'Avg steps',
+  pastCheckins: 'Past check-ins', noCheckins: 'No check-ins yet.', low: 'low', high: 'high', copyForCoach: 'Copy for coach', copied: 'Copied — paste it in your coach’s chat',
+  thisWeek: 'Last 7 days', glassAdd: '+ Glass',
+  lang: 'Language', theme: 'Theme', auto: 'Auto', light: 'Light', dark: 'Dark', targets: 'Daily targets', waterTarget: 'Water (ml)', glass: 'Glass (ml)', stepsTarget: 'Steps', sleepTarget: 'Sleep (h)', plateStep: 'Weight step (kg)',
+  habitsEdit: 'Habits', newHabit: 'New habit…', cycle: 'Training cycle', cycleStart: 'Date of Day 1',
+  data: 'Data', exportBtn: 'Export backup', importBtn: 'Import backup', resetPlan: "Reset plan to coach's version", eraseAll: 'Erase this device',
+  imported: 'Backup imported', confirmImport: 'Replace ALL data with this backup?', badFile: 'That file is not a FitLife backup.',
+  confirmResetPlan: "Replace your plan with the coach's original? Your logs are kept.", confirmErase: 'Erase all data on this device? Synced data stays in your account.',
+  macrosFromPlan: 'Calorie and macro targets come from your meal plan.',
+  account: 'Account & sync', signedInAs: 'Signed in as {0}', signOut: 'Sign out', signIn: 'Sign in', signUp: 'Create account', email: 'Email', password: 'Password',
+  useOffline: 'Use on this device only', localOnly: 'This device only — not synced.', notConfigured: 'Cloud sync is not set up yet (see README).',
+  syncOk: 'Synced', syncing: 'Syncing…', syncOffline: 'Offline — will sync later', syncError: 'Sync problem', syncNow: 'Sync now', lastSync: 'Last sync {0}',
+  authTitle: 'Your fitness, everywhere', authSub: 'Sign in to sync your logs between phone and computer.', checkEmail: 'Check your email to confirm your account, then sign in.',
+  install: 'Install app', noData: '—',
+};
+type Key = keyof typeof EN;
+
+const AR: Record<Key, string> = {
+  home: 'الرئيسية', nutrition: 'التغذية', training: 'التدريب', progress: 'التقدم', habits: 'العادات', settings: 'الإعدادات',
+  today: 'اليوم', yesterday: 'أمس', cancel: 'إلغاء', save: 'حفظ', add: 'إضافة', edit: 'تعديل', del: 'حذف', close: 'إغلاق', back: 'رجوع', done: 'تم', search: 'بحث…', confirm: 'تأكيد',
+  kcal: 'سعرة', protein: 'بروتين', carbs: 'كربوهيدرات', fat: 'دهون', calories: 'السعرات',
+  trainingDay: 'يوم تمرين', restDay: 'يوم راحة', left: 'متبقي {0}', over: 'زيادة {0}', ofTarget: 'من {0}',
+  eatAll: 'أكلتها كلها', skippedRest: 'تُحذف في أيام الراحة', trainingOnly: 'أيام التمرين فقط',
+  swap: 'استبدال', swapTitle: 'استبدال {0}', swapToday: 'اليوم فقط', swapAlways: 'دائمًا', swapped: 'مستبدل',
+  swappedFrom: 'تم الاستبدال من {0}', revertCoach: 'الرجوع لخطة المدرب', revertToday: 'إلغاء استبدال اليوم',
+  matchBy: 'المطابقة حسب', matchAuto: 'تلقائي', sameGroup: 'نفس المجموعة', allFoods: 'كل الأطعمة', noMatches: 'لا توجد نتائج.',
+  amount: 'الكمية', vsOriginal: 'مقارنة بالأصل', cooked: '≈ {0} جم مطبوخ', newFood: 'طعام جديد', myFoods: 'أطعمتي',
+  foodName: 'اسم الطعام', unit: 'الوحدة', per: 'القيم لكل', group: 'المجموعة',
+  extras: 'أطعمة إضافية', extrasEmpty: 'لا يوجد أكل إضافي اليوم.', addExtra: 'تسجيل أكل إضافي', quick: 'إدخال سريع (الماكروز فقط)',
+  coachNote: 'ملاحظة المدرب', myNote: 'ملاحظتي', addNote: 'أضف ملاحظة…', notes: 'ملاحظات',
+  shopping: 'قائمة التسوق', shopDays: 'الأيام', shopHint: 'من خطتك الحالية. أكل ما قبل التمرين محسوب لأيام التمرين فقط.',
+  confirmDelete: 'حذف هذا العنصر؟', phase: 'المرحلة',
+  program: 'البرنامج', startWorkout: 'ابدأ التمرين', continueWorkout: 'أكمل', inProgress: 'تمرين جارٍ',
+  restDayMsg: 'يوم راحة. استشفِ وامشِ والتزم بأكلك.', trainAnyway: 'تمرّن على أي حال',
+  nSets: '{0} مجموعات', oneSet: 'مجموعة واحدة', setsWord: 'المجموعات', set: 'مجموعة', prev: 'السابق', kgCol: 'كجم', repsCol: 'تكرار', rirCol: 'RIR', minCol: 'دقيقة',
+  lastTime: 'آخر مرة', finish: 'إنهاء', discard: 'تجاهل', addSet: 'مجموعة', removeSet: 'حذف مجموعة', addExercise: 'إضافة تمرين',
+  swapExercise: 'تبديل التمرين', swapExHint: 'نفس العضلة من مكتبة المدرب', video: 'فيديو', noVideo: 'لا يوجد فيديو لهذا التمرين.', openOriginal: 'فتح الرابط الأصلي',
+  confirmDiscard: 'تجاهل هذا التمرين؟ ستُفقد المجموعات المسجلة.', noSetsDone: 'لم تُحدد أي مجموعة. تجاهل التمرين؟',
+  workoutSaved: 'تم حفظ التمرين 💪', history: 'السجل', noHistory: 'لا توجد تمارين مسجلة بعد.',
+  duration: 'المدة', volume: 'الحجم', strength: 'تقدم القوة', needMoreData: 'سجّل جلستين على الأقل لعرض الرسم.',
+  e1rm: '1RM تقديري', topSet: 'أعلى وزن', makeToday: 'اجعله اليوم', dayN: 'اليوم {0}', exercisesN: '{0} تمارين',
+  suggestUp: 'وصلت لأعلى المدى ← جرّب {0} كجم', suggestHold: 'ابقَ على {0} كجم وزوّد التكرارات', suggestDown: 'أقل من المدى ← ابقَ على {0} كجم أو أقل',
+  restTimer: 'راحة', skip: 'تخطي', sessionNote: 'ملاحظة الجلسة',
+  editPlan: 'تعديل الخطة', doneEditing: 'تم', editDay: 'تعديل اليوم', dayName: 'اسم اليوم', exercise: 'التمرين', reps: 'التكرارات', restSec: 'الراحة (ث)', rirTarget: 'RIR',
+  weight: 'الوزن', weightKg: 'الوزن (كجم)', logWeight: 'سجّل اليوم', measurements: 'القياسات (سم)', waist: 'الخصر', chest: 'الصدر', arm: 'الذراع', thigh: 'الفخذ', hips: 'الأرداف', neck: 'الرقبة', bodyFat: 'نسبة الدهون %', photo: 'صورة', addPhoto: 'إضافة صورة',
+  current: 'الحالي', change: 'التغير', perWeek: 'أسبوعيًا', entries: 'السجلات', photos: 'الصور', noPhotos: 'لا توجد صور بعد.', compareHint: 'اضغط على صورتين للمقارنة.',
+  avg7: 'متوسط ٧ أيام', saved: 'تم الحفظ', all: 'الكل', d30: '٣٠ يوم', d90: '٩٠ يوم', d180: '٦ أشهر',
+  water: 'الماء', steps: 'الخطوات', sleep: 'النوم', hoursShort: 'س', dailyHabits: 'العادات اليومية', streak: '{0} أيام متتالية', noHabits: 'لا توجد عادات. أضفها من الإعدادات.',
+  last7: 'آخر ٧ أيام', workout: 'التمرين', followedPlan: 'خطة الأكل',
+  journal: 'اليوميات', journalHint: 'كيف كان يومك؟ الطاقة، المزاج، أي شيء يستحق التذكر…',
+  checkin: 'المتابعة الأسبوعية', checkinDue: 'حان وقت المتابعة الأسبوعية.', checkinIn: 'المتابعة القادمة بعد {0} أيام.', startCheckin: 'ابدأ المتابعة', checkinBanner: 'استمارة المتابعة جاهزة',
+  energy: 'الطاقة', hunger: 'الجوع', sleepQ: 'جودة النوم', stress: 'التوتر', digestion: 'الهضم', dietAdh: 'الالتزام بالنظام %',
+  wins: 'إنجازات الأسبوع', struggles: 'الصعوبات', questions: 'أسئلة للمدرب', weekSummary: 'ملخص الأسبوع (تلقائي)',
+  avgWeight: 'متوسط الوزن', workouts: 'التمارين', avgKcal: 'متوسط السعرات', planFollowed: 'الالتزام بالخطة', avgWater: 'متوسط الماء', avgSleep: 'متوسط النوم', avgSteps: 'متوسط الخطوات',
+  pastCheckins: 'المتابعات السابقة', noCheckins: 'لا توجد متابعات بعد.', low: 'منخفض', high: 'مرتفع', copyForCoach: 'نسخ للمدرب', copied: 'تم النسخ — الصقه في محادثة المدرب',
+  thisWeek: 'آخر ٧ أيام', glassAdd: '+ كوب',
+  lang: 'اللغة', theme: 'المظهر', auto: 'تلقائي', light: 'فاتح', dark: 'داكن', targets: 'الأهداف اليومية', waterTarget: 'الماء (مل)', glass: 'الكوب (مل)', stepsTarget: 'الخطوات', sleepTarget: 'النوم (س)', plateStep: 'زيادة الوزن (كجم)',
+  habitsEdit: 'العادات', newHabit: 'عادة جديدة…', cycle: 'دورة التدريب', cycleStart: 'تاريخ اليوم الأول',
+  data: 'البيانات', exportBtn: 'تصدير نسخة احتياطية', importBtn: 'استيراد نسخة احتياطية', resetPlan: 'استعادة خطة المدرب الأصلية', eraseAll: 'مسح بيانات هذا الجهاز',
+  imported: 'تم الاستيراد', confirmImport: 'استبدال كل البيانات بهذه النسخة؟', badFile: 'هذا الملف ليس نسخة من FitLife.',
+  confirmResetPlan: 'استبدال خطتك بخطة المدرب الأصلية؟ سجلاتك محفوظة.', confirmErase: 'مسح كل البيانات على هذا الجهاز؟ البيانات المتزامنة تبقى في حسابك.',
+  macrosFromPlan: 'أهداف السعرات والماكروز مأخوذة من خطة التغذية.',
+  account: 'الحساب والمزامنة', signedInAs: 'مسجل الدخول باسم {0}', signOut: 'تسجيل الخروج', signIn: 'تسجيل الدخول', signUp: 'إنشاء حساب', email: 'البريد الإلكتروني', password: 'كلمة المرور',
+  useOffline: 'استخدام على هذا الجهاز فقط', localOnly: 'هذا الجهاز فقط — بدون مزامنة.', notConfigured: 'المزامنة السحابية غير مُعدة بعد (راجع README).',
+  syncOk: 'تمت المزامنة', syncing: 'جارٍ المزامنة…', syncOffline: 'غير متصل — ستتم المزامنة لاحقًا', syncError: 'مشكلة في المزامنة', syncNow: 'زامن الآن', lastSync: 'آخر مزامنة {0}',
+  authTitle: 'لياقتك في كل مكان', authSub: 'سجّل الدخول لمزامنة سجلاتك بين الهاتف والكمبيوتر.', checkEmail: 'افحص بريدك لتأكيد الحساب ثم سجّل الدخول.',
+  install: 'تثبيت التطبيق', noData: '—',
+};
+
+let lang: Lang = 'en';
+export const setLang = (l: Lang) => { lang = l; };
+export const getLang = () => lang;
+export const t = (k: Key, ...a: (string | number)[]) => {
+  let s = (lang === 'ar' ? AR : EN)[k] ?? EN[k] ?? k;
+  a.forEach((v, i) => { s = s.replace(`{${i}}`, String(v)); });
+  return s;
+};
+/** pick the current-language string from a bilingual value */
+export const L = (v: L10n | string | null | undefined) => (v == null ? '' : typeof v === 'string' ? v : v[lang] || v.en || v.ar);
+export const locale = () => (lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
+export const fmtN = (n: number, d = 0) => n.toLocaleString(locale(), { maximumFractionDigits: d, minimumFractionDigits: 0 });
+export type TKey = Key;
+export const tSets = (n: number) => (n === 1 ? t('oneSet') : t('nSets', n));
